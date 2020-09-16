@@ -8,6 +8,7 @@
       </div>
       <div class="d-flex flex-row justify-start">
         <v-text-field
+          v-model="filter"
           label="Solo"
           placeholder="Search"
           filled
@@ -47,7 +48,17 @@
 
 <script>
 export default {
-  name: "search-block"
+  name: "search-block",
+  computed: {
+    filter: {
+      get() {
+        return this.$store.state.filterCriteria;
+      },
+      set(value) {
+        return this.$store.commit("setMovieFilterCriteria", value);
+      }
+    }
+  }
 };
 </script>
 

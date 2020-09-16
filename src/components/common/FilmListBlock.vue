@@ -45,7 +45,7 @@ export default {
   },
   methods: {
     selectMovie(movieId) {
-      this.$store.commit("selectMovieId", movieId);
+      this.$store.dispatch("selectMovie", movieId);
     }
   }
 };

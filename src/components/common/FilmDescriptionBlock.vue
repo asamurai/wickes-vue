@@ -48,7 +48,7 @@
           </p>
         </v-row>
       </div>
-      <router-link to="/">
+      <router-link to="/" @click.native="resetApplication">
         <span class="back-to-home-icon">
           <v-icon color="#f65261">{{ svgPath }}</v-icon>
         </span>
@@ -91,6 +91,11 @@ export default {
     },
     score: function() {
       return this.selectedMovie ? this.selectedMovie.vote_count : 'N/A';
+    }
+  },
+  methods: {
+    resetApplication() {
+      this.$store.dispatch("resetApplication");
     }
   }
 };

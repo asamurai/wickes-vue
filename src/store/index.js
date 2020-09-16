@@ -8,26 +8,54 @@ const defaultMovieList = movies.list;
 
 const state = {
   movieList: defaultMovieList,
-  selectedMovieId: null
+  selectedMovieId: null,
+  sortCriteria: "release_date",
+  filterCriteria: ""
 };
 
 const actions = {
-  resetFilmList: ({ commit }) => {
-    commit("setMovieList", true);
+  resetApplication: ({ commit }) => {
+    commit("setMovieList", defaultMovieList);
+    commit("selectMovieId", null);
+  },
+  selectMovieByGenres: ({ commit, state }) => {
+    const selectedMovie = state.movieList.find(
+      movie => movie.id === state.selectedMovieId
+    );
+    if (selectedMovie) {
+      const { genres: selectedMovieGenres } = selectedMovie;
+      const moviesWithSimilarGenres = defaultMovieList.filter(movie => {
+        return movie.genres.some(genre => selectedMovieGenres.includes(genre));
+      });
+      commit("setMovieList", moviesWithSimilarGenres);
+    }
+  },
+  selectMovie: ({ commit, dispatch }, movieId) => {
+    commit("selectMovieId", movieId);
+    dispatch("selectMovieByGenres");
   }
 };
 
 const mutations = {
   setMovieList(state, movieList) {
-    this.state.movieList = movieList;
+    state.movieList = movieList;
   },
   selectMovieId(state, movieId) {
-    this.state.selectedMovieId = movieId;
+    state.selectedMovieId = movieId;
+  },
+  setMovieSortCriteria: (state, sortCriteria) => {
+    state.sortCriteria = sortCriteria;
+  },
+  setMovieFilterCriteria: (state, filterCriteria) => {
+    state.filterCriteria = filterCriteria;
   }
 };
 
 const getters = {
-  movieList: state => state.movieList,
+  movieList: state =>
+    state.movieList
+      .filter(movie => movie.title.toLowerCase().includes(state.filterCriteria.toLowerCase()))
+      .sort((a, b) => b[state.sortCriteria] - a[state.sortCriteria]),
   selectedMovie: state =>
     state.movieList.find(movie => movie.id === state.selectedMovieId)
 };

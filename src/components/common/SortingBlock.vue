@@ -2,14 +2,18 @@
   <v-container class="sorting-container-background">
     <v-row class="d-flex flex-row justify-end">
       <div class="text-uppercase font-weight-regular sort-text">Sort by</div>
-      <v-btn-toggle active-class="active-sort-button" mandatory>
-        <v-btn color="#424242">
+      <v-btn-toggle
+        v-model="sortingCriteria"
+        active-class="active-sort-button"
+        mandatory
+      >
+        <v-btn color="#424242" value="release_date">
           <span class="font-weight-regular text-uppercase sort-button">
             Release date
           </span>
         </v-btn>
 
-        <v-btn color="#424242">
+        <v-btn color="#424242" value="vote_count">
           <span class="font-weight-regular text-uppercase sort-button">
             Rating
           </span>
@@ -21,7 +25,17 @@
 
 <script>
 export default {
-  name: "sorting-block"
+  name: "sorting-block",
+  computed: {
+    sortingCriteria: {
+      get() {
+        return this.$store.state.sortingCriteria;
+      },
+      set(value) {
+        return this.$store.commit("setMovieSortCriteria", value);
+      }
+    }
+  }
 };
 </script>
 
