@@ -4,7 +4,7 @@
       <div>
         <v-img
           class="rounded-br-0 rounded-bl-0"
-          src="https://upload.wikimedia.org/wikipedia/en/c/c4/Kill_Bill_Volume_2.png"
+          :src="image"
           width="300"
         ></v-img>
       </div>
@@ -12,14 +12,12 @@
         <v-row class="d-flex">
           <v-col class="d-inline-block">
             <p class="text-h3 font-weight-light">
-              {{ selectedMovie ? selectedMovie.title : "N/A" }}
+              {{ title }}
             </p>
           </v-col>
           <v-col class="d-inline-block">
             <div class="score">
-              <span class="font-weight-regular">{{
-                selectedMovie ? selectedMovie.score : "N/A"
-              }}</span>
+              <span class="font-weight-regular">{{ score }}</span>
             </div>
           </v-col>
         </v-row>
@@ -28,25 +26,25 @@
             {{
               selectedMovie && selectedMovie.oscar
                 ? "Oscar winning movie"
-                : "Action & Adventure"
+                : genres
             }}
           </p>
         </v-row>
         <v-row class="ma-2 d-flex justify-start">
           <v-col class="d-inline-block">
             <p class="font-weight-medium red-text">
-              {{ selectedMovie ? selectedMovie.year : "N/A" }}
+              {{ releaseDate }}
             </p>
           </v-col>
           <v-col class="d-inline-block">
             <p class="font-weight-medium red-text">
-              {{ selectedMovie ? selectedMovie.length : "N/A" }} min
+              {{ filmLength }} min
             </p>
           </v-col>
         </v-row>
         <v-row class="ma-2">
           <p class="font-weight-medium">
-            {{ selectedMovie ? selectedMovie.description : "N/A" }}
+            {{ overview }}
           </p>
         </v-row>
       </div>
@@ -72,7 +70,28 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["selectedMovie"])
+    ...mapGetters(["selectedMovie"]),
+    title: function() {
+      return this.selectedMovie ? this.selectedMovie.title : 'N/A';
+    },
+    image: function() {
+      return this.selectedMovie ? this.selectedMovie.poster_path : 'N/A';
+    },
+    filmLength: function() {
+      return this.selectedMovie ? this.selectedMovie.length : 'N/A';
+    },
+    releaseDate: function() {
+      return this.selectedMovie ? this.selectedMovie.release_date.split('-')[0] : 'N/A';
+    },
+    overview: function() {
+      return this.selectedMovie ? this.selectedMovie.overview : 'N/A';
+    },
+    genres: function() {
+      return this.selectedMovie ? this.selectedMovie.genres.join(", ") : 'N/A';
+    },
+    score: function() {
+      return this.selectedMovie ? this.selectedMovie.vote_count : 'N/A';
+    }
   }
 };
 </script>

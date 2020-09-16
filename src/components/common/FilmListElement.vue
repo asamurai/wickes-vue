@@ -8,16 +8,16 @@
     >
       <v-img
         class="rounded-br-0 rounded-bl-0"
-        :src="film.image"
+        :src="film.poster_path"
         width="350"
       ></v-img>
       <div class="pa-4">
         <div class="d-flex justify-space-between align-center">
           <div class="font-weight-medium">{{ film.title }}</div>
-          <div class="year font-weight-medium">{{ film.year }}</div>
+          <div class="year font-weight-medium">{{ film.release_date.split('-')[0] }}</div>
         </div>
         <div class="film-type">
-          {{ film.oscar ? "Oscar winning Movie" : film.type }}
+          {{ film.oscar ? "Oscar winning Movie" : film.genres.join(", ") }}
         </div>
       </div>
     </v-card>
