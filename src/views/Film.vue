@@ -1,16 +1,16 @@
 <template>
   <v-container class="global-container">
-    <home></home>
+    <film></film>
   </v-container>
 </template>
 
 <script>
-import Home from "@/components/Home.vue";
+import Film from "@/components/Film.vue";
 
 export default {
-  name: "home-view",
+  name: "film-view",
   components: {
-    Home
+    Film
   }
 };
 </script>
