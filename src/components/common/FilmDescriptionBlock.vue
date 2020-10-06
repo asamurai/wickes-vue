@@ -38,7 +38,7 @@
           </v-col>
           <v-col class="d-inline-block">
             <p class="font-weight-medium red-text">
-              {{ filmLength }} min
+              {{ selectedMovie | formatFilm }}
             </p>
           </v-col>
         </v-row>
@@ -61,6 +61,7 @@
 <script>
 import { mdiMagnify } from "@mdi/js";
 import { mapGetters } from "vuex";
+import formatFilm from '@/filters/format-film-duration';
 
 export default {
   name: "film-description-block",
@@ -68,6 +69,9 @@ export default {
     return {
       svgPath: mdiMagnify
     };
+  },
+  filters: {
+    formatFilm
   },
   computed: {
     ...mapGetters(["selectedMovie"]),
