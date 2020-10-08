@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import Film from "../views/Film.vue";
+import NotFound from "../views/NotFound";
 
 Vue.use(VueRouter);
 
@@ -13,6 +14,10 @@ const routes = [
   {
     path: "/film/:id",
     component: Film
+  },
+  {
+    path: "*",
+    component: NotFound
   }
 ];
 

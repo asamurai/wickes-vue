@@ -38,12 +38,14 @@ export default {
   },
   watch: {
     sortCriteria() {
-      this.fetchMovies();
-    }
-  },
-  methods: {
-    fetchMovies() {
-      this.$store.dispatch("fetchMovies");
+      this.$router.push({
+        path: "/",
+        query: {
+          sortCriteria: this.$store.state.sortCriteria,
+          filterCriteria: this.$store.state.filterCriteria,
+          filterByCriteria: this.$store.state.filterByCriteria
+        }
+      });
     }
   }
 };

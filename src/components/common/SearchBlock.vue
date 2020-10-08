@@ -59,7 +59,9 @@ export default {
         return this.$store.state.filterByCriteria;
       },
       set(value) {
-        return this.$store.commit("setMovieFilterByCriteria", value);
+        this.$store.commit("setMovieFilterByCriteria", value);
+        this.updateQueryParams();
+        return value;
       }
     },
     filter: {
@@ -67,24 +69,63 @@ export default {
         return this.$store.state.filterCriteria;
       },
       set(value) {
-        return this.$store.commit("setMovieFilterCriteria", value);
+        this.$store.commit("setMovieFilterCriteria", value);
+        this.updateQueryParams();
+        return value;
       }
     }
   },
   created() {
+    if (this.$route.query.sortCriteria) {
+      this.$store.commit(
+        "setMovieSortCriteria",
+        this.$route.query.sortCriteria
+      );
+    }
+    if (this.$route.query.filterCriteria) {
+      this.$store.commit(
+        "setMovieFilterCriteria",
+        this.$route.query.filterCriteria
+      );
+    }
+    if (this.$route.query.filterByCriteria) {
+      this.$store.commit(
+        "setMovieFilterByCriteria",
+        this.$route.query.filterByCriteria
+      );
+    }
     this.fetchMovies();
   },
   watch: {
-    filter() {
-      this.fetchMovies();
-    },
-    filterByCriteria() {
+    $route() {
+      this.$store.commit(
+        "setMovieSortCriteria",
+        this.$route.query.sortCriteria
+      );
+      this.$store.commit(
+        "setMovieFilterCriteria",
+        this.$route.query.filterCriteria
+      );
+      this.$store.commit(
+        "setMovieFilterByCriteria",
+        this.$route.query.filterByCriteria
+      );
       this.fetchMovies();
     }
   },
   methods: {
     fetchMovies() {
       this.$store.dispatch("fetchMovies");
+    },
+    updateQueryParams() {
+      this.$router.push({
+        path: "/",
+        query: {
+          sortCriteria: this.$store.state.sortCriteria,
+          filterCriteria: this.$store.state.filterCriteria,
+          filterByCriteria: this.$store.state.filterByCriteria
+        }
+      });
     }
   }
 };
