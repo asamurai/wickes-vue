@@ -73,12 +73,9 @@ export default {
   filters: {
     formatFilm
   },
-  async created() {
+  created() {
     const movieId = this.$route.params.id;
-    if (movieId && !this.selectedMovie) {
-      await this.selectMovie(movieId);
-      await this.fetchFilmsBySameGenres(movieId);
-    }
+    this.selectMovie(movieId);
   },
   computed: {
     ...mapGetters(["selectedMovie"]),
@@ -104,9 +101,6 @@ export default {
   methods: {
     resetSelectedMovie() {
       this.$store.dispatch("resetSelectedMovie");
-    },
-    fetchFilmsBySameGenres() {
-      this.$store.dispatch("fetchMovieByGenres");
     },
     selectMovie(movieId) {
       this.$store.dispatch("selectMovie", movieId);
