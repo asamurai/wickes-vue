@@ -1,1 +1,1 @@
-export default film => film.length + " min";
+export default film => (film ? film.length || "N/A" + " min" : "N/A");

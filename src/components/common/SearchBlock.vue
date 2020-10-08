@@ -27,14 +27,18 @@
         <div class="text-uppercase font-weight-regular search-text">
           Search by
         </div>
-        <v-btn-toggle active-class="active-search-button" mandatory>
-          <v-btn color="#424242">
+        <v-btn-toggle
+          v-model="filterByCriteria"
+          active-class="active-search-button"
+          mandatory
+        >
+          <v-btn color="#424242" value="title">
             <span class="font-weight-regular text-uppercase search-button">
               Title
             </span>
           </v-btn>
 
-          <v-btn color="#424242">
+          <v-btn color="#424242" value="genres">
             <span class="font-weight-regular text-uppercase search-button">
               Genre
             </span>
@@ -50,6 +54,14 @@
 export default {
   name: "search-block",
   computed: {
+    filterByCriteria: {
+      get() {
+        return this.$store.state.filterByCriteria;
+      },
+      set(value) {
+        return this.$store.commit("setMovieFilterByCriteria", value);
+      }
+    },
     filter: {
       get() {
         return this.$store.state.filterCriteria;
@@ -57,6 +69,22 @@ export default {
       set(value) {
         return this.$store.commit("setMovieFilterCriteria", value);
       }
+    }
+  },
+  created() {
+    this.fetchMovies();
+  },
+  watch: {
+    filter() {
+      this.fetchMovies();
+    },
+    filterByCriteria() {
+      this.fetchMovies();
+    }
+  },
+  methods: {
+    fetchMovies() {
+      this.$store.dispatch("fetchMovies");
     }
   }
 };

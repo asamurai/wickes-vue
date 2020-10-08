@@ -48,7 +48,7 @@
           </p>
         </v-row>
       </div>
-      <router-link to="/" @click.native="resetApplication">
+      <router-link to="/" @click.native="resetSelectedMovie">
         <span class="back-to-home-icon">
           <v-icon color="#f65261">{{ svgPath }}</v-icon>
         </span>
@@ -73,6 +73,13 @@ export default {
   filters: {
     formatFilm
   },
+  async created() {
+    const movieId = this.$route.params.id;
+    if (movieId && !this.selectedMovie) {
+      await this.selectMovie(movieId);
+      await this.fetchFilmsBySameGenres(movieId);
+    }
+  },
   computed: {
     ...mapGetters(["selectedMovie"]),
     title: function() {
@@ -80,9 +87,6 @@ export default {
     },
     image: function() {
       return this.selectedMovie ? this.selectedMovie.poster_path : 'N/A';
-    },
-    filmLength: function() {
-      return this.selectedMovie ? this.selectedMovie.length : 'N/A';
     },
     releaseDate: function() {
       return this.selectedMovie ? this.selectedMovie.release_date.split('-')[0] : 'N/A';
@@ -98,8 +102,14 @@ export default {
     }
   },
   methods: {
-    resetApplication() {
-      this.$store.dispatch("resetApplication");
+    resetSelectedMovie() {
+      this.$store.dispatch("resetSelectedMovie");
+    },
+    fetchFilmsBySameGenres() {
+      this.$store.dispatch("fetchMovieByGenres");
+    },
+    selectMovie(movieId) {
+      this.$store.dispatch("selectMovie", movieId);
     }
   }
 };

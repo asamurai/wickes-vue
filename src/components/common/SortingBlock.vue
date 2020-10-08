@@ -3,7 +3,7 @@
     <v-row class="d-flex flex-row justify-end">
       <div class="text-uppercase font-weight-regular sort-text">Sort by</div>
       <v-btn-toggle
-        v-model="sortingCriteria"
+        v-model="sortCriteria"
         active-class="active-sort-button"
         mandatory
       >
@@ -27,13 +27,23 @@
 export default {
   name: "sorting-block",
   computed: {
-    sortingCriteria: {
+    sortCriteria: {
       get() {
-        return this.$store.state.sortingCriteria;
+        return this.$store.state.sortCriteria;
       },
       set(value) {
         return this.$store.commit("setMovieSortCriteria", value);
       }
+    }
+  },
+  watch: {
+    sortCriteria() {
+      this.fetchMovies();
+    }
+  },
+  methods: {
+    fetchMovies() {
+      this.$store.dispatch("fetchMovies");
     }
   }
 };

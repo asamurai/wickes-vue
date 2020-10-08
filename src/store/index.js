@@ -1,38 +1,45 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import movies from "./movies";
+import moviesApiService from "../api/movies-api";
 
 Vue.use(Vuex);
 
-const defaultMovieList = movies.list;
-
 const state = {
-  movieList: defaultMovieList,
-  selectedMovieId: null,
+  movieList: [],
+  selectedMovie: null,
   sortCriteria: "release_date",
-  filterCriteria: ""
+  filterCriteria: "",
+  filterByCriteria: "title"
 };
 
 const actions = {
-  resetApplication: ({ commit }) => {
-    commit("setMovieList", defaultMovieList);
-    commit("selectMovieId", null);
+  resetSelectedMovie: ({ commit }) => {
+    commit("selectMovie", null);
   },
-  selectMovieByGenres: ({ commit, state }) => {
-    const selectedMovie = state.movieList.find(
-      movie => movie.id === state.selectedMovieId
-    );
-    if (selectedMovie) {
-      const { genres: selectedMovieGenres } = selectedMovie;
-      const moviesWithSimilarGenres = defaultMovieList.filter(movie => {
-        return movie.genres.some(genre => selectedMovieGenres.includes(genre));
+  fetchMovies: async ({ commit }) => {
+    const movies = await moviesApiService.getMovieList({
+      sortBy: state.sortCriteria,
+      searchBy: state.filterByCriteria,
+      search: state.filterCriteria,
+      sortOrder: "desc"
+    });
+    commit("setMovieList", movies);
+  },
+  fetchMovieByGenres: async ({ commit, state }) => {
+    if (state.selectedMovie) {
+      const movies = await moviesApiService.getMovieList({
+        sortBy: state.sortCriteria,
+        searchBy: "genres",
+        search: state.selectedMovie.genres[0],
+        sortOrder: "desc"
       });
-      commit("setMovieList", moviesWithSimilarGenres);
+      commit("setMovieList", movies);
     }
   },
-  selectMovie: ({ commit, dispatch }, movieId) => {
-    commit("selectMovieId", movieId);
-    dispatch("selectMovieByGenres");
+  selectMovie: async ({ commit, dispatch }, movieId) => {
+    const movie = await moviesApiService.getMovieById(movieId);
+    commit("selectMovie", movie);
+    dispatch("fetchMovieByGenres");
   }
 };
 
@@ -40,24 +47,23 @@ const mutations = {
   setMovieList(state, movieList) {
     state.movieList = movieList;
   },
-  selectMovieId(state, movieId) {
-    state.selectedMovieId = movieId;
+  selectMovie(state, movie) {
+    state.selectedMovie = movie;
   },
   setMovieSortCriteria: (state, sortCriteria) => {
     state.sortCriteria = sortCriteria;
   },
   setMovieFilterCriteria: (state, filterCriteria) => {
     state.filterCriteria = filterCriteria;
-  }
+  },
+  setMovieFilterByCriteria: (state, filterByCriteria) => {
+    state.filterByCriteria = filterByCriteria;
+  },
 };
 
 const getters = {
-  movieList: state =>
-    state.movieList
-      .filter(movie => movie.title.toLowerCase().includes(state.filterCriteria.toLowerCase()))
-      .sort((a, b) => b[state.sortCriteria] - a[state.sortCriteria]),
-  selectedMovie: state =>
-    state.movieList.find(movie => movie.id === state.selectedMovieId)
+  movieList: state => state.movieList,
+  selectedMovie: state => state.selectedMovie
 };
 
 export default new Vuex.Store({
